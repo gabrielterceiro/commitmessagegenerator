@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "commitmessagegenerator"
-version = "1.5.0"
+version = "2.2.0"
 description = "Generate commit messages with AI (Google Gemini) automatically using `git diff`."
 readme = "README.md"
 license = {text = "MIT"}

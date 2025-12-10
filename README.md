@@ -22,6 +22,14 @@ pip install commitmessagegenerator
 commitgen -cf
 ```
 
+This opens an interactive configuration menu where you can:
+
+1. Set or update your Gemini API key
+2. Change the AI model
+3. Configure file staging behavior
+
+Each option can be configured independently, and you can exit at any time without saving changes.
+
 ## Run this and type you API key to the terminal so the package creates the .env file and automatically adds it to the .gitignore
 
 Or do it manually:
@@ -32,6 +40,8 @@ Create a `.env` file in the directory where you will run commitgen (usually the 
 
 ```
 GEMINI_API_KEY=your-gemini-api-key
+AI_MODEL=gemini-2.0-flash
+AUTO_ADD_ALL=true
 ```
 
 ## 🚀 Usage
@@ -45,8 +55,36 @@ commitgen (-c/-cp)
 The command will:
 
 - Read the git diff;
-- Send it to the Google Gemini API;
+- Send it to the Google Gemini API using your configured model;
 - Return a commit message suggestion directly in your terminal.
+
+### Available Commands
+
+- `commitgen` - Generate commit message only
+- `commitgen -c` - Generate and commit with the message
+- `commitgen -cp` - Generate, commit, and push
+- `commitgen -cf` - Configure API key, model, and file staging behavior
+- `commitgen -s` - Show current configuration status
+
+### Available Models
+
+When configuring with `-cf`, you can choose from:
+
+1. **gemini-2.0-flash** (default) - Fast and efficient
+2. **gemini-1.5-flash** - Good balance of speed and quality
+3. **gemini-1.5-pro** - Highest quality, slower
+4. **gemini-2.0-flash-exp** - Experimental version
+5. **gemini-2.5-flash** - Latest version, fast and efficient
+6. **gemini-2.5-pro** - Latest version, highest quality
+
+### File Staging Behavior
+
+When configuring with `-cf`, you can choose how files are staged:
+
+1. **Auto-add all files** (default) - Automatically runs `git add --all` before generating the commit message
+2. **Staged only** - Only reads the diff from files you've already staged with `git add`
+
+The "staged only" option gives you more control over which changes are included in the commit message.
 
 ## 🧩 Requisites
 
