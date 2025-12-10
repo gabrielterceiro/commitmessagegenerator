@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from google import genai
 from git import Repo
+from .configure import get_configured_model, get_auto_add_setting
 
 def gerar_mensagem_commit():
     load_dotenv()
@@ -9,16 +10,20 @@ def gerar_mensagem_commit():
     if not key:
         raise RuntimeError("The GEMINI_API_KEY environment variable is not set.")
 
-    #genai.configure(api_key=key)
-    #model = genai.GenerativeModel("gemini-2.0-flash")
+    # Get the configured model
+    model = get_configured_model()
 
     client = genai.Client(api_key=key)
     
 
     repo = Repo(os.getcwd())
 
-    # Inclui arquivos staged (adicionados ou modificados)
-    repo.git.add(all=True)
+    # Check if auto-add is enabled
+    auto_add = get_auto_add_setting()
+    if auto_add:
+        # Automatically stage all changes
+        repo.git.add(all=True)
+    
     diff = repo.git.diff("--cached")
 
     if not diff.strip():
@@ -39,7 +44,7 @@ def gerar_mensagem_commit():
     )
 
     response = client.models.generate_content(
-        model="gemini-2.0-flash",
+        model=model,
         contents=prompt
     )
-    return response.text.strip()
+    return response.text.strip() if response.text else "Failed to generate commit message"
