@@ -1,11 +1,10 @@
 import os
-from dotenv import load_dotenv
 from google import genai
 from git import Repo
-from .configure import get_configured_model, get_auto_add_setting
+from .configure import get_configured_model, get_auto_add_setting, load_config_env
 
 def gerar_mensagem_commit():
-    load_dotenv()
+    load_config_env()
     key = os.getenv("GEMINI_API_KEY")
     if not key:
         raise RuntimeError("The GEMINI_API_KEY environment variable is not set.")

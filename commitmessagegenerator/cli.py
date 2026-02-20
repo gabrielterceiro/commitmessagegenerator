@@ -1,7 +1,15 @@
 import argparse
 import subprocess
 from .generator import gerar_mensagem_commit
-from .configure import api_key, get_configured_model, get_auto_add_setting, update_setting, get_api_key_status
+from .configure import (
+    api_key,
+    get_configured_model,
+    get_auto_add_setting,
+    update_setting,
+    get_api_key_status,
+    load_config_env,
+    resolve_env_path,
+)
 import sys
 import getpass
 
@@ -16,6 +24,11 @@ MODEL_MAP = {
 
 def configure_menu():
     """Interactive configuration menu"""
+    configure_menu_with_scope("auto")
+
+
+def configure_menu_with_scope(config_scope):
+    """Interactive configuration menu with target scope."""
     while True:
         # Get current settings
         api_set = get_api_key_status()
@@ -37,15 +50,15 @@ def configure_menu():
             print("\nExiting configuration.\n")
             break
         elif choice == "1":
-            configure_api_key()
+            configure_api_key(config_scope)
         elif choice == "2":
-            configure_model()
+            configure_model(config_scope)
         elif choice == "3":
-            configure_staging()
+            configure_staging(config_scope)
         else:
             print("\nInvalid option. Please try again.")
 
-def configure_api_key():
+def configure_api_key(config_scope):
     """Configure the API key"""
     print("\n" + "-"*40)
     print("API KEY CONFIGURATION")
@@ -59,10 +72,10 @@ def configure_api_key():
         print("\nNo changes made.")
         return
     
-    update_setting("GEMINI_API_KEY", key)
+    update_setting("GEMINI_API_KEY", key, scope=config_scope)
     print("\n✓ API Key saved successfully!")
 
-def configure_model():
+def configure_model(config_scope):
     """Configure the AI model"""
     current_model = get_configured_model()
     
@@ -87,12 +100,12 @@ def configure_model():
     
     if choice in MODEL_MAP:
         selected_model = MODEL_MAP[choice]
-        update_setting("AI_MODEL", selected_model)
+        update_setting("AI_MODEL", selected_model, scope=config_scope)
         print(f"\n✓ Model changed to: {selected_model}")
     else:
         print("\nInvalid option. No changes made.")
 
-def configure_staging():
+def configure_staging(config_scope):
     """Configure file staging behavior"""
     auto_add = get_auto_add_setting()
     
@@ -111,10 +124,10 @@ def configure_staging():
         return
     
     if choice == "1":
-        update_setting("AUTO_ADD_ALL", "true")
+        update_setting("AUTO_ADD_ALL", "true", scope=config_scope)
         print("\n✓ Set to: Auto-add all files")
     elif choice == "2":
-        update_setting("AUTO_ADD_ALL", "false")
+        update_setting("AUTO_ADD_ALL", "false", scope=config_scope)
         print("\n✓ Set to: Staged only")
     else:
         print("\nInvalid option. No changes made.")
@@ -125,14 +138,18 @@ def main():
     parser.add_argument("-cp", "--commitpush",  action="store_true", help="Commits and pushes with the generated message")
     parser.add_argument("-cf", "--configure", action="store_true", help="Configures the GEMINI_API_KEY environment variable")
     parser.add_argument("-s", "--status", action="store_true", help="Shows current configuration status")
+    parser.add_argument(
+        "--config-scope",
+        choices=["auto", "local", "global"],
+        default="auto",
+        help="Where -cf writes configuration (.env): auto, local, or global",
+    )
     args = parser.parse_args()
 
     if args.status:
-        from .configure import get_configured_model, get_auto_add_setting
         import os
-        from dotenv import load_dotenv
-        
-        load_dotenv()
+
+        env_path = load_config_env()
         key = os.getenv("GEMINI_API_KEY")
         model = get_configured_model()
         auto_add = get_auto_add_setting()
@@ -141,6 +158,10 @@ def main():
         print(f"API Key: {'✓ Set' if key else '✗ Not set'}")
         print(f"Model: {model}")
         print(f"Auto-add all files: {'✓ Yes' if auto_add else '✗ No (staged only)'}")
+        if env_path is not None:
+            print(f"Config file: {env_path}")
+        else:
+            print("Config file: not found (.env not discovered)")
         return
 
     if not args.configure:
@@ -161,7 +182,10 @@ def main():
         subprocess.run(["git", "push"])
     
     if args.configure:
-        configure_menu()
+        configure_menu_with_scope(args.config_scope)
+        configured_path = resolve_env_path()
+        if configured_path is not None:
+            print(f"\nConfiguration file in use: {configured_path}")
     
     if len(sys.argv) == 1:
         print("\nRemoving staged changes (git reset)...")

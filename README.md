@@ -22,6 +22,14 @@ pip install commitmessagegenerator
 commitgen -cf
 ```
 
+You can explicitly choose where configuration is written:
+
+```bash
+commitgen -cf --config-scope auto    # default behavior
+commitgen -cf --config-scope local   # always write .env in current directory
+commitgen -cf --config-scope global  # always write ~/.commitgen/.env
+```
+
 This opens an interactive configuration menu where you can:
 
 1. Set or update your Gemini API key
@@ -44,6 +52,14 @@ AI_MODEL=gemini-2.0-flash
 AUTO_ADD_ALL=true
 ```
 
+Config discovery order:
+
+1. `.env` in current directory
+2. `.env` in parent directories (useful when running from subfolders)
+3. Global config in `~/.commitgen/.env` (created automatically by `commitgen -cf --config-scope auto` when no local `.env` exists)
+
+Environment variables already set in your shell (e.g. `GEMINI_API_KEY`) are also respected.
+
 ## 🚀 Usage
 
 With the terminal, inside any Git repository with pending changes, run:
@@ -64,6 +80,7 @@ The command will:
 - `commitgen -c` - Generate and commit with the message
 - `commitgen -cp` - Generate, commit, and push
 - `commitgen -cf` - Configure API key, model, and file staging behavior
+- `commitgen -cf --config-scope [auto|local|global]` - Choose where `.env` is created/updated
 - `commitgen -s` - Show current configuration status
 
 ### Available Models
