@@ -14,12 +14,12 @@ import sys
 import getpass
 
 MODEL_MAP = {
-    "1": "gemini-2.0-flash",
-    "2": "gemini-1.5-flash", 
-    "3": "gemini-1.5-pro",
-    "4": "gemini-2.0-flash-exp",
-    "5": "gemini-2.5-flash",
-    "6": "gemini-2.5-pro"
+    "1": "gemini-2.5-flash",
+    "2": "gemini-2.5-flash-lite",
+    "3": "gemini-2.5-pro",
+    "4": "gemini-3-flash",
+    "5": "gemini-3.5-flash",
+    "6": "gemini-3.1-pro",
 }
 
 def configure_menu():
@@ -84,12 +84,12 @@ def configure_model(config_scope):
     print("-"*40)
     print(f"Current model: {current_model}\n")
     print("Available models:")
-    print("1. gemini-2.0-flash (fast and efficient)")
-    print("2. gemini-1.5-flash (good balance)")
-    print("3. gemini-1.5-pro (highest quality, slower)")
-    print("4. gemini-2.0-flash-exp (experimental)")
-    print("5. gemini-2.5-flash (latest, fast)")
-    print("6. gemini-2.5-pro (latest, highest quality)")
+    print("1. gemini-2.5-flash (default, fast and efficient)")
+    print("2. gemini-2.5-flash-lite (fastest, most economical)")
+    print("3. gemini-2.5-pro (advanced reasoning and coding)")
+    print("4. gemini-3-flash (frontier performance, preview)")
+    print("5. gemini-3.5-flash (latest stable, best for coding)")
+    print("6. gemini-3.1-pro (highest quality, preview)")
     print("\n0. Cancel")
     
     choice = input("\nSelect model (0-6): ").strip()

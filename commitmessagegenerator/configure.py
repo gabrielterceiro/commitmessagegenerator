@@ -111,7 +111,7 @@ def _ensure_gitignore(env_path):
             if not env_in_gitignore:
                 outfile.write("\n.env")
 
-def api_key(key, model="gemini-2.0-flash", auto_add_all=True, scope="auto"):
+def api_key(key, model="gemini-2.5-flash", auto_add_all=True, scope="auto"):
     """Set all configuration at once (legacy function)"""
     config = {
         "GEMINI_API_KEY": key,
@@ -178,7 +178,7 @@ def get_configured_model():
             model_line = next((line for line in lines if line.startswith("AI_MODEL=")), None)
             if model_line:
                 return model_line.split("=", 1)[1].strip()
-    return "gemini-2.0-flash"  # Default fallback
+    return "gemini-2.5-flash"  # Default fallback
 
 def get_auto_add_setting():
     """Get the auto-add all files setting from .env file"""

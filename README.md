@@ -48,7 +48,7 @@ Create a `.env` file in the directory where you will run commitgen (usually the 
 
 ```
 GEMINI_API_KEY=your-gemini-api-key
-AI_MODEL=gemini-2.0-flash
+AI_MODEL=gemini-2.5-flash
 AUTO_ADD_ALL=true
 ```
 
@@ -87,12 +87,12 @@ The command will:
 
 When configuring with `-cf`, you can choose from:
 
-1. **gemini-2.0-flash** (default) - Fast and efficient
-2. **gemini-1.5-flash** - Good balance of speed and quality
-3. **gemini-1.5-pro** - Highest quality, slower
-4. **gemini-2.0-flash-exp** - Experimental version
-5. **gemini-2.5-flash** - Latest version, fast and efficient
-6. **gemini-2.5-pro** - Latest version, highest quality
+1. **gemini-2.5-flash** (default) - Fast and efficient, best price-performance
+2. **gemini-2.5-flash-lite** - Fastest and most economical
+3. **gemini-2.5-pro** - Advanced reasoning and coding
+4. **gemini-3-flash** - Frontier performance (preview)
+5. **gemini-3.5-flash** - Latest stable model, best for coding
+6. **gemini-3.1-pro** - Highest quality (preview)
 
 ### File Staging Behavior
 
